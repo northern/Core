@@ -1,0 +1,2 @@
+# Core
+Common Application Core
