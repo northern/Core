@@ -1,6 +1,6 @@
 <?php
 
-namespace Northern\Core\Common\Entity;
+namespace Northern\Core\Common;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -11,12 +11,12 @@ use Doctrine\ORM\Mapping as ORM;
 abstract class AbstractEntity {
 	
 	/**
-	 * @ORM\Column(name="time_created", type="integer")
+	 * @ORM\Column(name="time_created", type="integer", options={"default" = 0})
 	 */
 	protected $timeCreated = 0;
 
 	/**
-	 * @ORM\Column(name="time_updated", type="integer")
+	 * @ORM\Column(name="time_updated", type="integer", options={"default" = 0})
 	 */
 	protected $timeUpdated = 0;
 	
@@ -44,17 +44,11 @@ abstract class AbstractEntity {
 	/**
 	 * @ORM\PreUpdate
 	 */
-	public function onPreUpdate()
+	public function onPreUpdate( \Doctrine\ORM\Event\PreUpdateEventArgs $eventArgs )
 	{
 		$this->timeUpdated = time();
 	}
 	
-	/**
-	 * Converts a date string to a UTC time integer.
-	 *
-	 * @param  string $date
-	 * @return integer
-	 */
 	protected function dateToTime( $date )
 	{
 		// If an invalid date was passed we return the current time.
@@ -73,9 +67,6 @@ abstract class AbstractEntity {
 		return $time;		
 	}
 	
-	/**
-	 * Invalidates the entity and updated the 'timeUpdated' attribute.
-	 */
 	public function invalidate()
 	{
 		$this->timeUpdated = time();
@@ -85,16 +76,10 @@ abstract class AbstractEntity {
 	{
 		foreach( $values as $field => $value )
 		{
-			$this->$field = $value;
+			$this->__set( $field, $value );
 		}
 	}
 
-	/**
-	 * Magic setter allows attribute access short cut.
-	 *
-	 * @param  string $method
-	 * @param  mixed $value
-	 */
 	public function __set( $method, $value )
 	{
 		$method = "set".ucfirst( $method );
@@ -105,12 +90,6 @@ abstract class AbstractEntity {
 		}
 	}
 
-	/**
-	 * Magic getter allows attribute access short cut.
-	 *
-	 * @param  string $method
-	 * @return mixed
-	 */
 	public function __get( $method )
 	{
 		$method = "get".ucfirst( $method );
@@ -122,5 +101,4 @@ abstract class AbstractEntity {
 
 		return NULL;
 	}
-	
 }

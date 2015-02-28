@@ -1,6 +1,6 @@
 <?php 
 
-namespace Northern\Core\User\Entity;
+namespace Northern\Core\User;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,7 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @ORM\Table(name="users")
  * @ORM\Entity(repositoryClass="Northern\Core\User\UserRepository")
  */
-class UserEntity extends \Northern\Core\Common\Entity\AbstractEntity {
+class UserEntity extends \Northern\Core\Common\AbstractEntity {
 	
 	const STATUS_ACTIVE   = 'active';
 	const STATUS_DISABLED = 'disabled';
