@@ -1,6 +1,6 @@
 <?php
 
-namespace Northern\Core\User\Security;
+namespace Northern\Core\Component\User\Security;
 
 trait PasswordEncoderInjectionTrait {
 

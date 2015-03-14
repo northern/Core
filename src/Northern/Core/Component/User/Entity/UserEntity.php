@@ -1,14 +1,13 @@
 <?php 
 
-namespace Northern\Core\User;
+namespace Northern\Core\Component\User\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * @ORM\MappedSuperclass
  * @ORM\Table(name="users")
- * @ORM\Entity(repositoryClass="Northern\Core\User\UserRepository")
+ * @ORM\Entity(repositoryClass="Northern\Core\Component\User\UserRepository")
  */
 class UserEntity extends \Northern\Core\Common\AbstractEntity {
 	
@@ -16,6 +15,11 @@ class UserEntity extends \Northern\Core\Common\AbstractEntity {
 	const STATUS_DISABLED = 'disabled';
 	const STATUS_DELETED  = 'deleted';
 	
+	const ROLE_USER       = 'user';
+	const ROLE_ADMIN      = 'admin';
+	
+	const FLAGS_VERIFIED  = 0x00000001;
+
 	/**
 	 * @ORM\Id
 	 * @ORM\GeneratedValue(strategy="AUTO")
@@ -29,7 +33,7 @@ class UserEntity extends \Northern\Core\Common\AbstractEntity {
 	protected $email;
 	
 	/**
-	 * @ORM\Column(type="string", length=128)
+	 * @ORM\Column(type="string", length=128, nullable=true)
 	 */
 	protected $password;
 
@@ -53,9 +57,22 @@ class UserEntity extends \Northern\Core\Common\AbstractEntity {
 	 */
 	protected $status;
 
+	/**
+	 * @ORM\Column(type="string", length=16, nullable=false)
+	 */
+	protected $role;
+
+	/**
+	 * @ORM\Column(type="integer", nullable=false, options={"default"=0})
+	 */
+	protected $flags = 0;
+
 	public function __construct()
 	{
-		$this->setStatus( static::STATUS_ACTIVE );
+		$this
+			->setStatus( static::STATUS_ACTIVE )
+			->setRole( static::ROLE_USER )
+		;
 	}
 	
 	public function getId()
@@ -144,6 +161,40 @@ class UserEntity extends \Northern\Core\Common\AbstractEntity {
 		];
 
 		return $statuses;
+	}
+
+	public function getRole()
+	{
+		return $this->role;
+	}
+
+	public function setRole( $role )
+	{
+		$this->role = $role;
+
+		return $this;
+	}
+
+	static public function  getRoles()
+	{
+		$roles = [
+			static::ROLE_USER,
+			static::ROLE_ADMIN,
+		];
+
+		return $roles;
+	}
+
+	public function getFlags()
+	{
+		return $this->flags;
+	}
+
+	public function setFlags( $flags )
+	{
+		$this->flags = $flags;
+
+		return $this;
 	}
 
 }
