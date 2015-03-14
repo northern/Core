@@ -3,6 +3,7 @@
 namespace Northern\Core\Component\User;
 
 use Northern\Common\Helper\ArrayHelper as Arr;
+use Northern\Core\Component\User\Entity\UserEntity;
 use Northern\Core\Common\Exception\Validation\Errors;
 
 class UserValidator extends \Northern\Core\Common\AbstractValidator {
@@ -43,7 +44,7 @@ class UserValidator extends \Northern\Core\Common\AbstractValidator {
 			),
 			'status' => array(
 				array(
-					'validator' => new \Zend\Validator\InArray( array('haystack' => \Northern\Core\Component\User\Entity\UserEntity::getStatuses() ) ),
+					'validator' => new \Zend\Validator\InArray( array('haystack' => UserEntity::getStatuses() ) ),
 					'message'   => "Invalid status specified.",
 				),
 			),
@@ -52,8 +53,13 @@ class UserValidator extends \Northern\Core\Common\AbstractValidator {
 		return $constraints;
 	}
 
-	public function validateUniqueEmail( UserEntity $userEntity, $email, Errors $errors )
+	public function validateUniqueEmail( UserEntity $userEntity, $email, Errors $errors = NULL )
 	{
+		if( empty( $errors ) )
+		{
+			$errors = new \Northern\Core\Common\Exception\Validation\Errors();
+		}
+
 		if( ! empty( $email ) )
 		{
 			if( $email !== $userEntity->email )

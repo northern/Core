@@ -76,18 +76,39 @@ class UserManager extends \Northern\Core\Common\AbstractManager {
 	 * not this method will throw a UserValidationException.
 	 *
 	 * @param  string $email
+	 * @param  string $password
 	 * @return \Northern\Core\Component\User\Entity\UserEntity
 	 * @throws \Northern\Core\Component\User\Exception\UserValidationException
 	 */
-	public function createUserEntity( $email )
+	public function createUserEntity( $email, $password = NULL )
 	{
+		$userEntity = new Entity\UserEntity();
+
 		$values = [
 			'email' => $email,
 		];
 
-		$userEntity = new Entity\UserEntity();
+		if( ! empty( $password ) )
+		{
+			$values['password'] = $password;
+		}
 
-		$this->updateUserEntity( $userEntity, $values );
+		$errors = $this->userValidator->validate( $values );
+
+		$errors = $this->userValidator->validateUniqueEmail( $userEntity, $email, $errors );
+		
+		if( $errors->any() )
+		{
+			throw new Exception\UserValidationException( $errors );
+		}
+
+		if( ! empty( $password ) )
+		{
+			$userEntity->salt     = $this->passwordEncoder->generateSalt();
+			$userEntity->password = $this->passwordEncoder->encodePassword( $password, $userEntity->salt );
+		}
+
+		$userEntity->email = $email;
 
 		return $userEntity;
 	}
@@ -101,12 +122,12 @@ class UserManager extends \Northern\Core\Common\AbstractManager {
 	 */
 	public function updateUserEntity( Entity\UserEntity $userEntity, array $values )
 	{
+		$password        = Arr::extract( $values, 'password' );
+		$passwordConfirm = Arr::extract( $values, 'passwordConfirm' );
+
 		$errors = $this->userValidator->validate( $values );
 
 		$errors = $this->userValidator->validateUniqueEmail( $userEntity, Arr::get( $values, 'email' ), $errors );
-
-		$password        = Arr::extract( $values, 'password' );
-		$passwordConfirm = Arr::extract( $values, 'passwordConfirm' );
 
 		if( ! empty( $password ) )
 		{
