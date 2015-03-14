@@ -1,6 +1,6 @@
 <?php
 
-namespace Northern\Core\User\Exception;
+namespace Northern\Core\Component\User\Exception;
 
 abstract class UserException extends \Northern\Core\Common\Exception\CoreException {
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Northern\Core\User;
+namespace Northern\Core\Component\User;
 
 class UserRepository extends \Northern\Core\Common\AbstractRepository {
 
@@ -44,7 +44,7 @@ class UserRepository extends \Northern\Core\Common\AbstractRepository {
 		$qb = $em->createQueryBuilder();
 		$qb
 			->select( array('u') )
-			->from('\Northern\Core\User\Entity\UserEntity', 'u' )
+			->from('\Northern\Core\Component\User\Entity\UserEntity', 'u' )
 		;
 
 		if( $status !== NULL )

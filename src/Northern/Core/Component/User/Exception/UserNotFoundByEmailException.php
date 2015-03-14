@@ -1,6 +1,6 @@
 <?php
 
-namespace Northern\Core\User\Exception;
+namespace Northern\Core\Component\User\Exception;
 
 class UserNotFoundByEmailException extends UserException {
 

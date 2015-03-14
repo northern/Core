@@ -1,6 +1,6 @@
 <?php
 
-namespace Northern\Core\User;
+namespace Northern\Core\Component\User;
 
 trait UserManagerAwareTrait {
 

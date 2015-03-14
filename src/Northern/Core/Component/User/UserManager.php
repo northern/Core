@@ -1,14 +1,25 @@
 <?php
 
-namespace Northern\Core\User;
+namespace Northern\Core\Component\User;
 
 use Northern\Common\Helper\ArrayHelper as Arr;
 
 class UserManager extends \Northern\Core\Common\AbstractManager {
 
-	use \Northern\Core\User\UserValidatorAwareTrait;
-	use \Northern\Core\User\UserRepositoryAwareTrait;
-	use \Northern\Core\User\Security\PasswordEncoderInjectionTrait;
+	use Security\PasswordEncoderInjectionTrait;
+
+	protected $userValidator;
+	protected $userRepository;
+
+	public function setUserValidator( UserValidator $userValidator )
+	{
+		$this->userValidator = $userValidator;
+	}
+
+	public function setUserRepository( UserRepository $userRepository )
+	{
+		$this->userRepository = $userRepository;
+	}
 
 	public function getUserEntityCount( $status = 'active' )
 	{
@@ -25,8 +36,8 @@ class UserManager extends \Northern\Core\Common\AbstractManager {
 	 * is thrown.
 	 *
 	 * @param  int $id
-	 * @return \Northern\Core\User\Entity\UserEntity
-	 * @throws \Northern\Core\User\Exception\UserNotFoundByIdException
+	 * @return \Northern\Core\Component\User\Entity\UserEntity
+	 * @throws \Northern\Core\Component\User\Exception\UserNotFoundByIdException
 	 */
 	public function getUserEntityById( $id )
 	{
@@ -45,8 +56,8 @@ class UserManager extends \Northern\Core\Common\AbstractManager {
 	 * is thrown.
 	 *
 	 * @param  string $email
-	 * @return \Northern\Core\User\Entity\UserEntity
-	 * @throws \Northern\Core\User\Exception\UserNotFoundByEmailException
+	 * @return \Northern\Core\Component\User\Entity\UserEntity
+	 * @throws \Northern\Core\Component\User\Exception\UserNotFoundByEmailException
 	 */
 	public function getUserEntityByEmail( $email )
 	{
@@ -65,20 +76,18 @@ class UserManager extends \Northern\Core\Common\AbstractManager {
 	 * not this method will throw a UserValidationException.
 	 *
 	 * @param  string $email
-	 * @param  string $plainTextPassword
-	 * @return \Northern\Core\User\Entity\UserEntity
-	 * @throws \Northern\Core\User\Exception\UserValidationException
+	 * @return \Northern\Core\Component\User\Entity\UserEntity
+	 * @throws \Northern\Core\Component\User\Exception\UserValidationException
 	 */
-	public function createUserEntity( $email, $plainTextPassword )
+	public function createUserEntity( $email )
 	{
-		$values = array(
-			'email'           => $email,
-			'password'        => $plainTextPassword,
-			'passwordConfirm' => $plainTextPassword,
-		);
+		$values = [
+			'email' => $email,
+		];
 
 		$userEntity = new Entity\UserEntity();
-		$userEntity = $this->updateUserEntity( $userEntity, $values );
+
+		$this->updateUserEntity( $userEntity, $values );
 
 		return $userEntity;
 	}
@@ -86,17 +95,18 @@ class UserManager extends \Northern\Core\Common\AbstractManager {
 	/**
 	 * Updates an existing UserEntity.
 	 *
-	 * @param  \Northern\Core\User\Entity\UserEntity
+	 * @param  \Northern\Core\Component\User\Entity\UserEntity
 	 * @param  array $values
-	 * @return \Northern\Core\User\Entity\UserEntity
-	 * @throws \Northern\Core\User\Exception\UserValidationException
+	 * @throws \Northern\Core\Component\User\Exception\UserValidationException
 	 */
 	public function updateUserEntity( Entity\UserEntity $userEntity, array $values )
 	{
-		$password        = Arr::get( $values, 'password' );
-		$passwordConfirm = Arr::get( $values, 'passwordConfirm' );
-
 		$errors = $this->userValidator->validate( $values );
+
+		$errors = $this->userValidator->validateUniqueEmail( $userEntity, Arr::get( $values, 'email' ), $errors );
+
+		$password        = Arr::extract( $values, 'password' );
+		$passwordConfirm = Arr::extract( $values, 'passwordConfirm' );
 
 		if( ! empty( $password ) )
 		{
@@ -118,13 +128,12 @@ class UserManager extends \Northern\Core\Common\AbstractManager {
 
 		// Remove the 'password' field here so it's not set overwritten during the
 		// entity 'update' method. In fact, in any situation we need to remove the
-		// 'password' field here.
+		// 'password' field here. We remove the passwordConfirm field for consistency.
 		unset( $values['password'] );
 		unset( $values['passwordConfirm'] );
 
+		// Update the user entity with the new validated values.
 		$userEntity->update( $values );
-
-		return $userEntity;
 	}
 
 	/**
@@ -132,8 +141,8 @@ class UserManager extends \Northern\Core\Common\AbstractManager {
 	 *
 	 * @param  string $email
 	 * @param  string $password
-	 * @return Northern\Core\User\Entity\UserEntity
-	 * @throws Northern\Core\User\Exception\InvalidPasswordException
+	 * @return Northern\Core\Component\User\Entity\UserEntity
+	 * @throws Northern\Core\Component\User\Exception\InvalidPasswordException
 	 */
 	public function authenticateUser( $email, $password )
 	{
@@ -145,6 +154,21 @@ class UserManager extends \Northern\Core\Common\AbstractManager {
 		}
 
 		return $userEntity;
+	}
+
+	/**
+	 * Creates a public token for the specified user. The public token can be used
+	 * for password reset and other public user actions in which the user is required
+	 * to be identified.
+	 *
+	 * @param  \Northern\Core\Component\Component\User\Entity\UserEntity
+	 * @return string
+	 */
+	public function getUserEntityPublicToken( Entity\UserEntity $userEntity )
+	{
+		$publicToken = sha1("{$userEntity->getId()}{$userEntity->getEmail()}{$userEntity->getPassword()}{$userEntity->getTimeCreated()}");
+
+		return $publicToken;
 	}
 
 }
