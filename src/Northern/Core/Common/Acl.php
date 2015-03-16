@@ -2,6 +2,8 @@
 
 namespace Northern\Core\Common;
 
+use Northern\Common\Helper\ArrayHelper as Arr;
+
 class Acl extends \Zend\Permissions\Acl\Acl {
 
 	public function loadPermissions( array $permissions )
