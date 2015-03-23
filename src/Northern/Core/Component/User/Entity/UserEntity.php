@@ -6,8 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * @ORM\Table(name="users")
- * @ORM\Entity(repositoryClass="Northern\Core\Component\User\UserRepository")
+ * @ORM\MappedSuperclass
  */
 class UserEntity extends \Northern\Core\Common\AbstractEntity {
 	

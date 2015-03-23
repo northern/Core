@@ -41,10 +41,12 @@ class UserRepository extends \Northern\Core\Common\AbstractRepository {
 	{
 		$em = $this->getEntityManager();
 
+		$entityName = $this->getEntityName();
+
 		$qb = $em->createQueryBuilder();
 		$qb
 			->select( array('u') )
-			->from('\Northern\Core\Component\User\Entity\UserEntity', 'u' )
+			->from( $entityName /*'\Northern\Core\Component\User\Entity\UserEntity'*/, 'u' )
 		;
 
 		if( $status !== NULL )
