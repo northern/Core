@@ -1,6 +1,6 @@
 <?php
 
-namespace Northern\Core\Common\Acl;
+namespace Northern\Core\Common;
 
 abstract class AbstractPermissions {
 
