@@ -78,7 +78,12 @@ abstract class AbstractEntity {
 		{
 			if( is_array( $value ) )
 			{
-				$this->__get( $field )->update( $value );
+				$entity = $this->__get( $field );
+
+				if( $entity instanceof AbstractEntity )
+				{
+					$entity->update( $value );
+				}
 			}
 			else
 			{
