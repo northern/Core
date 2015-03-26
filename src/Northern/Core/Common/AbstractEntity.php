@@ -76,7 +76,14 @@ abstract class AbstractEntity {
 	{
 		foreach( $values as $field => $value )
 		{
-			$this->__set( $field, $value );
+			if( is_array( $value ) )
+			{
+				$this->__get( $field )->update( $value );
+			}
+			else
+			{
+				$this->__set( $field, $value );
+			}
 		}
 	}
 
