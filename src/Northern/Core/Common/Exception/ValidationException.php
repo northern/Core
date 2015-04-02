@@ -9,7 +9,7 @@ class ValidationException extends CoreException {
 	protected $errors;
 	protected $values;
 
-	public function __construct( Errors $errors, array $values = NULL, \Exception $previous = NULL )
+	public function __construct( Errors $errors, array $values = array(), \Exception $previous = NULL )
 	{
 		parent::__construct("A validation exception occured.", static::$scope, $previous);
 
