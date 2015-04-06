@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\MappedSuperclass
  * @ORM\HasLifecycleCallbacks()
  */
-abstract class AbstractEntity {
+abstract class AbstractEntity extends AbstractValue {
 	
 	/**
 	 * @ORM\Column(name="time_created", type="integer", options={"default" = 0})
@@ -92,25 +92,4 @@ abstract class AbstractEntity {
 		}
 	}
 
-	public function __set( $method, $value )
-	{
-		$method = "set".ucfirst( $method );
-
-		if( method_exists( $this, $method ) )
-		{
-			$this->$method( $value );
-		}
-	}
-
-	public function __get( $method )
-	{
-		$method = "get".ucfirst( $method );
-
-		if( method_exists( $this, $method ) )
-		{
-			return $this->$method();
-		}
-
-		return NULL;
-	}
 }
