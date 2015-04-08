@@ -6,7 +6,7 @@ use Northern\Common\Helper\ArrayHelper as Arr;
 
 class UserManager extends \Northern\Core\Common\AbstractManager {
 
-	use Security\PasswordEncoderInjectionTrait;
+	use Security\PasswordEncoderAwareTrait;
 
 	protected $userValidator;
 	protected $userRepository;
