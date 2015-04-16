@@ -2,6 +2,8 @@
 
 namespace Northern\Core\Component\User;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 class UserRepository extends \Northern\Core\Common\AbstractRepository {
 
 	public function getUserEntityCount( $status )
@@ -19,7 +21,11 @@ class UserRepository extends \Northern\Core\Common\AbstractRepository {
 
 		$paginator = $this->getPaginator( $query );
 
-		return $query->getResult();
+		$result = $query->getResult();
+
+		$userCollection = new ArrayCollection( $result );
+
+		return $userCollection;
 	}
 
 	public function getUserEntityById( $id )

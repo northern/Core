@@ -11,21 +11,45 @@ class UserManager extends \Northern\Core\Common\AbstractManager {
 	protected $userValidator;
 	protected $userRepository;
 
+	/**
+	 * Injects a UserValidator.
+	 *
+	 * @param \Northern\Core\Component\User\UserValidator $userValidator
+	 */
 	public function setUserValidator( UserValidator $userValidator )
 	{
 		$this->userValidator = $userValidator;
 	}
 
+	/**
+	 * Injects a UserRepository.
+	 *
+	 * @param \Northern\Core\Component\User\UserRepository $userRepository
+	 */
 	public function setUserRepository( UserRepository $userRepository )
 	{
 		$this->userRepository = $userRepository;
 	}
 
+	/**
+	 * Returns the UserEntity count.
+	 *
+	 * @param  string $status
+	 * @return integer
+	 */
 	public function getUserEntityCount( $status = 'active' )
 	{
 		return $this->userRepository->getUserEntityCount( $status );
 	}
 
+	/**
+	 * Returns an ArrayCollection of UserEntity's.
+	 *
+	 * @param  string $status
+	 * @param  integer $offset
+	 * @param  integer $limit
+	 * @return \Doctrine\Common\Collections\ArrayCollection
+	 */
 	public function getUserEntityCollection( $status = 'active', $offset = 0, $limit = 10 )
 	{
 		return $this->userRepository->getUserEntityCollection( $status, $offset, $limit );
