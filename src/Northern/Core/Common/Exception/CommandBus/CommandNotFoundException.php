@@ -6,7 +6,7 @@ class CommandNotFoundException extends \Northern\Core\Common\Exception\CoreExcep
 	
 	public function __construct( $command, \Exception $previous = NULL )
 	{
-		parent::__construct("The command {$command} could be executed.", 0, $previous);
+		parent::__construct("The command {$command} could not be executed.", 0, $previous);
 	}
 
 }
