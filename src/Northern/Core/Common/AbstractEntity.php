@@ -74,20 +74,18 @@ abstract class AbstractEntity extends AbstractValue {
 	
 	public function update( array $values )
 	{
-		foreach( $values as $field => $value )
+		if( ! empty( $values ) )
 		{
-			if( is_array( $value ) )
+			foreach( $values as $field => $value )
 			{
-				$entity = $this->__get( $field );
-
-				if( $entity instanceof AbstractEntity )
+				if( is_array( $value ) )
 				{
-					$entity->update( $value );
+					$entity = $this->__get( $field );
 				}
-			}
-			else
-			{
-				$this->__set( $field, $value );
+				else
+				{
+					$this->__set( $field, $value );
+				}
 			}
 		}
 	}
