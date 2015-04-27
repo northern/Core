@@ -72,7 +72,7 @@ abstract class AbstractEntity extends AbstractValue {
 		$this->timeUpdated = time();
 	}
 	
-	public function update( array $values )
+	public function update( array $values = NULL )
 	{
 		if( ! empty( $values ) )
 		{
