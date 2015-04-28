@@ -2,24 +2,24 @@
 
 namespace Northern\Core\Common;
 
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
 /**
- * @ORM\MappedSuperclass
- * @ORM\HasLifecycleCallbacks()
+ * @ODM\MappedSuperclass
+ * @ODM\HasLifecycleCallbacks()
  */
-abstract class AbstractEntity extends AbstractPersistent {
-	
+abstract class AbstractDocument extends AbstractPersistent {
+
 	/**
-	 * @ORM\Column(name="time_created", type="integer", options={"default" = 0})
+ 	 * @ODM\Int
 	 */
 	protected $timeCreated = 0;
 
 	/**
-	 * @ORM\Column(name="time_updated", type="integer", options={"default" = 0})
+ 	 * @ODM\Int
 	 */
 	protected $timeUpdated = 0;
-	
+
 	public function getTimeCreated()
 	{
 		return $this->timeCreated;
@@ -31,7 +31,7 @@ abstract class AbstractEntity extends AbstractPersistent {
 	}
 
 	/**
-	 * @ORM\PrePersist
+	 * @ODM\PrePersist
 	 */
 	public function onPrePersist()
 	{
@@ -42,9 +42,9 @@ abstract class AbstractEntity extends AbstractPersistent {
 	}
 	
 	/**
-	 * @ORM\PreUpdate
+	 * @ODM\PreUpdate
 	 */
-	public function onPreUpdate( \Doctrine\ORM\Event\PreUpdateEventArgs $eventArgs )
+	public function onPreUpdate()
 	{
 		$this->timeUpdated = time();
 	}
@@ -53,5 +53,5 @@ abstract class AbstractEntity extends AbstractPersistent {
 	{
 		$this->timeUpdated = time();
 	}
-	
+
 }
