@@ -2,6 +2,8 @@
 
 namespace Northern\Core\Common;
 
+use \Northern\Core\Common\Exception\Validation\Errors;
+
 abstract class AbstractValidator extends AbstractBase {
 
 	public function getConstraints()
@@ -13,7 +15,7 @@ abstract class AbstractValidator extends AbstractBase {
 	{
 		if( empty( $errors ) )
 		{
-			$errors = new \Northern\Core\Common\Exception\Validation\Errors();
+			$errors = new Errors();
 		}
 
 		$constraints = $this->getConstraints();
