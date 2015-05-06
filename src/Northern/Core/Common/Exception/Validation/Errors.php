@@ -21,4 +21,19 @@ class Errors extends \ArrayObject {
 		Arr::merge( $this, $errors );
 	}
 
+   public function insert( $key, Errors $errors )
+   {
+      if( $errors->any() )
+      {
+         if( empty( $key ) )
+         {
+            $this->combine( $errors );
+         }
+         else
+         {
+            $this[ $key ] = $errors;
+         }
+      }
+   }
+
 }
