@@ -95,6 +95,21 @@ class UserManager extends \Northern\Core\Common\AbstractManager {
 		return $userEntity;
 	}
 
+	public function getUserEntityByAuthentication( $email, $plainTextPassword )
+	{
+		$userEntity = $this->getUserEntityByEmail( $email );
+
+		$passwordSalt    = $userEntity->getSalt();
+		$encodedPassword = $userEntity->getPassword();
+
+		if( $this->passwordEncoder->isPasswordValid( $encodedPassword, $plainTextPassword, $passwordSalt ) == FALSE )
+		{
+			throw new Exception\InvalidPasswordException();
+		}
+
+		return $userEntity;
+	}
+
 	/**
 	 * Creates a new UserEntity. The $email parameter must be unique, if 
 	 * not this method will throw a UserValidationException.
