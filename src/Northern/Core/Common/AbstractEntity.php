@@ -13,7 +13,7 @@ abstract class AbstractEntity extends AbstractPersistent {
 	/**
 	 * @ORM\Column(name="time_created", type="integer", options={"default" = 0})
 	 */
-	protected $timeCreated = 0;
+	protected $timeCreated = NULL;
 
 	/**
 	 * @ORM\Column(name="time_updated", type="integer", options={"default" = 0})
@@ -22,7 +22,7 @@ abstract class AbstractEntity extends AbstractPersistent {
 	
 	public function getTimeCreated()
 	{
-		return $this->timeCreated;
+		return $this->timeCreated === NULL ? 0 : $this->timeCreated;
 	}
 	
 	public function getTimeUpdated()
@@ -35,10 +35,13 @@ abstract class AbstractEntity extends AbstractPersistent {
 	 */
 	public function onPrePersist()
 	{
-		$time = time();
-		
-		$this->timeCreated = $time;
-		$this->timeUpdated = 0;
+		if( $this->timeCreated === NULL )
+		{
+			$time = time();
+			
+			$this->timeCreated = $time;
+			$this->timeUpdated = 0;
+		}
 	}
 	
 	/**
