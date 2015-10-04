@@ -2,6 +2,8 @@
 
 namespace Northern\Core\Common\Exception\Validation;
 
+use Northern\Common\Helper\ArrayHelper as Arr;
+
 class Errors extends \ArrayObject {
 	
 	public function add( $key, $message )
@@ -13,5 +15,25 @@ class Errors extends \ArrayObject {
 	{
 		return $this->count() > 0;
 	}
+
+	public function combine( Errors $errors )
+	{
+		Arr::merge( $this, $errors );
+	}
+
+   public function insert( $key, Errors $errors )
+   {
+      if( $errors->any() )
+      {
+         if( empty( $key ) )
+         {
+            $this->combine( $errors );
+         }
+         else
+         {
+            $this[ $key ] = $errors;
+         }
+      }
+   }
 
 }

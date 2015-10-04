@@ -2,11 +2,11 @@
 
 namespace Northern\Core\Component\User\Security;
 
-trait PasswordEncoderInjectionTrait {
+trait PasswordEncoderAwareTrait {
 
 	protected $passwordEncoder;
 
-	public function setPasswordEncoder( PasswordEncoder $passwordEncoder )
+	public function setPasswordEncoder( PasswordEncoderInterface $passwordEncoder )
 	{
 		$this->passwordEncoder = $passwordEncoder;
 	}

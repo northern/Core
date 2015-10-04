@@ -2,23 +2,21 @@
 
 namespace Northern\Core\Common;
 
+use \Northern\Core\Common\Exception\Validation\Errors;
+
 abstract class AbstractValidator extends AbstractBase {
-
-	protected $errors;
-
-	public function getErrors()
-	{
-		return $this->errors;
-	}
 
 	public function getConstraints()
 	{
 		return array();
 	}
 
-	public function validate( array $values )
+	public function validate( array $values, Errors $errors = NULL )
 	{
-		$this->errors = new \Northern\Core\Common\Exception\Validation\Errors();
+		if( empty( $errors ) )
+		{
+			$errors = new Errors();
+		}
 
 		$constraints = $this->getConstraints();
 		
@@ -35,13 +33,13 @@ abstract class AbstractValidator extends AbstractBase {
 			{
 				if( ! $rule['validator']->isValid( $value ) )
 				{
-					$this->errors->add( $field, $rule['message'] );
+					$errors->add( $field, $rule['message'] );
 					break;
 				}
 			}
 		}
 
-		return $this->errors;
+		return $errors;
 	}
 
 }

@@ -63,4 +63,9 @@ class EntityDatabase extends \Northern\Core\Common\AbstractDatabase {
 		$this->em->rollback();
 	}
 
+   public function isTransactionActive()
+   {
+      return $this->em->getConnection()->isTransactionActive();
+   }
+
 }

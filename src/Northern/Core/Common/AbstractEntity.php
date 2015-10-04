@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\MappedSuperclass
  * @ORM\HasLifecycleCallbacks()
  */
-abstract class AbstractEntity {
+abstract class AbstractEntity extends AbstractPersistent {
 	
 	/**
 	 * @ORM\Column(name="time_created", type="integer", options={"default" = 0})
@@ -52,63 +52,9 @@ abstract class AbstractEntity {
 		$this->timeUpdated = time();
 	}
 	
-	protected function dateToTime( $date )
-	{
-		// If an invalid date was passed we return the current time.
-		$time = time();
-		
-		if( $date instanceof \DateTime )
-		{
-			$time = $date->format('r');
-		}
-		else
-		if( is_string( $date ) )
-		{
-			$time = strtotime( $date );
-		}
-		
-		return $time;		
-	}
-	
 	public function invalidate()
 	{
 		$this->timeUpdated = time();
 	}
 	
-	public function update( array $values )
-	{
-		foreach( $values as $field => $value )
-		{
-			if( is_array( $value ) )
-			{
-				$this->__get( $field )->update( $value );
-			}
-			else
-			{
-				$this->__set( $field, $value );
-			}
-		}
-	}
-
-	public function __set( $method, $value )
-	{
-		$method = "set".ucfirst( $method );
-
-		if( method_exists( $this, $method ) )
-		{
-			$this->$method( $value );
-		}
-	}
-
-	public function __get( $method )
-	{
-		$method = "get".ucfirst( $method );
-
-		if( method_exists( $this, $method ) )
-		{
-			return $this->$method();
-		}
-
-		return NULL;
-	}
 }
