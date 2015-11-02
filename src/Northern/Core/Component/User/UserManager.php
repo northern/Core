@@ -2,6 +2,7 @@
 
 namespace Northern\Core\Component\User;
 
+use Northern\Core\Domain\User;
 use Northern\Common\Helper\ArrayHelper as Arr;
 
 class UserManager extends \Northern\Core\Common\AbstractManager {
@@ -32,72 +33,72 @@ class UserManager extends \Northern\Core\Common\AbstractManager {
 	}
 
 	/**
-	 * Returns the UserEntity count.
+	 * Returns the User count.
 	 *
 	 * @param  string $status
 	 * @return integer
 	 */
-	public function getUserEntityCount( $status = 'active' )
+	public function getUserCount( $status = 'active' )
 	{
-		return $this->userRepository->getUserEntityCount( $status );
+		return $this->userRepository->getUserCount( $status );
 	}
 
 	/**
-	 * Returns an ArrayCollection of UserEntity's.
+	 * Returns an ArrayCollection of User's.
 	 *
 	 * @param  string $status
 	 * @param  integer $offset
 	 * @param  integer $limit
 	 * @return \Doctrine\Common\Collections\ArrayCollection
 	 */
-	public function getUserEntityCollection( $status = 'active', $offset = 0, $limit = 10 )
+	public function getUserCollection( $status = 'active', $offset = 0, $limit = 10 )
 	{
-		return $this->userRepository->getUserEntityCollection( $status, $offset, $limit );
+		return $this->userRepository->getUserCollection( $status, $offset, $limit );
 	}
 
 	/**
-	 * Returns a UserEntity by the specified Id. If the user cannot be found an exception
+	 * Returns a User by the specified Id. If the user cannot be found an exception
 	 * is thrown.
 	 *
 	 * @param  int $id
-	 * @return \Northern\Core\Component\User\Entity\UserEntity
+	 * @return \Northern\Core\Domain\User
 	 * @throws \Northern\Core\Component\User\Exception\UserNotFoundByIdException
 	 */
-	public function getUserEntityById( $id )
+	public function getUserById( $id )
 	{
-		$userEntity = $this->userRepository->getUserEntityById( $id );
+		$user = $this->userRepository->getUserById( $id );
 
-		if( empty( $userEntity ) )
+		if( empty( $user ) )
 		{
 			throw new Exception\UserNotFoundByIdException( $id );
 		}
 
-		return $userEntity;
+		return $user;
 	}
 
 	/**
-	 * Returns a UserEntity by the specified email. If the user cannot be found an exception
+	 * Returns a User by the specified email. If the user cannot be found an exception
 	 * is thrown.
 	 *
 	 * @param  string $email
-	 * @return \Northern\Core\Component\User\Entity\UserEntity
+	 * @return \Northern\Core\Domain\UserEntity
 	 * @throws \Northern\Core\Component\User\Exception\UserNotFoundByEmailException
 	 */
 	public function getUserEntityByEmail( $email )
 	{
-		$userEntity = $this->userRepository->getUserEntityByEmail( $email );
+		$user = $this->userRepository->getUserByEmail( $email );
 
-		if( empty( $userEntity ) )
+		if( empty( $user ) )
 		{
 			throw new Exception\UserNotFoundByEmailException( $email );
 		}
 
-		return $userEntity;
+		return $user;
 	}
 
-	public function getUserEntityByAuthentication( $email, $plainTextPassword )
+	public function getUserByAuthentication( $email, $plainTextPassword )
 	{
-		$userEntity = $this->getUserEntityByEmail( $email );
+		$user = $this->getUserByEmail( $email );
 
 		$passwordSalt    = $userEntity->getSalt();
 		$encodedPassword = $userEntity->getPassword();
@@ -107,21 +108,21 @@ class UserManager extends \Northern\Core\Common\AbstractManager {
 			throw new Exception\InvalidPasswordException();
 		}
 
-		return $userEntity;
+		return $user;
 	}
 
 	/**
-	 * Creates a new UserEntity. The $email parameter must be unique, if 
+	 * Creates a new User. The $email parameter must be unique, if 
 	 * not this method will throw a UserValidationException.
 	 *
 	 * @param  string $email
 	 * @param  string $password
-	 * @return \Northern\Core\Component\User\Entity\UserEntity
+	 * @return \Northern\Core\Domain\User
 	 * @throws \Northern\Core\Component\User\Exception\UserValidationException
 	 */
-	public function createUserEntity( $email, $password = NULL )
+	public function createUser( $email, $password = NULL )
 	{
-		$userEntity = new Entity\UserEntity();
+		$userEntity = new User();
 
 		$values = [
 			'email' => $email,
@@ -134,7 +135,7 @@ class UserManager extends \Northern\Core\Common\AbstractManager {
 
 		$errors = $this->userValidator->validate( $values );
 
-		$errors = $this->userValidator->validateUniqueEmail( $userEntity, $email, $errors );
+		$errors = $this->userValidator->validateUniqueEmail( $user, $email, $errors );
 		
 		if( $errors->any() )
 		{
@@ -143,30 +144,30 @@ class UserManager extends \Northern\Core\Common\AbstractManager {
 
 		if( ! empty( $password ) )
 		{
-			$userEntity->salt     = $this->passwordEncoder->generateSalt();
-			$userEntity->password = $this->passwordEncoder->encodePassword( $password, $userEntity->salt );
+			$user->salt     = $this->passwordEncoder->generateSalt();
+			$user->password = $this->passwordEncoder->encodePassword( $password, $user->salt );
 		}
 
-		$userEntity->email = $email;
+		$user->email = $email;
 
-		return $userEntity;
+		return $user;
 	}
 
 	/**
-	 * Updates an existing UserEntity.
+	 * Updates an existing User.
 	 *
-	 * @param  \Northern\Core\Component\User\Entity\UserEntity
+	 * @param  \Northern\Core\Domain\User
 	 * @param  array $values
 	 * @throws \Northern\Core\Component\User\Exception\UserValidationException
 	 */
-	public function updateUserEntity( Entity\UserEntity $userEntity, array $values )
+	public function updateUser( User $user, array $values )
 	{
 		$password        = Arr::extract( $values, 'password' );
 		$passwordConfirm = Arr::extract( $values, 'passwordConfirm' );
 
 		$errors = $this->userValidator->validate( $values );
 
-		$errors = $this->userValidator->validateUniqueEmail( $userEntity, Arr::get( $values, 'email' ), $errors );
+		$errors = $this->userValidator->validateUniqueEmail( $user, Arr::get( $values, 'email' ), $errors );
 
 		if( ! empty( $password ) )
 		{
@@ -176,8 +177,8 @@ class UserManager extends \Northern\Core\Common\AbstractManager {
 			}
 			else
 			{
-				$userEntity->salt     = $this->passwordEncoder->generateSalt();
-				$userEntity->password = $this->passwordEncoder->encodePassword( $password, $userEntity->salt );
+				$user->salt     = $this->passwordEncoder->generateSalt();
+				$user->password = $this->passwordEncoder->encodePassword( $password, $user->salt );
 			}
 		}
 
@@ -193,40 +194,40 @@ class UserManager extends \Northern\Core\Common\AbstractManager {
 		unset( $values['passwordConfirm'] );
 
 		// Update the user entity with the new validated values.
-		$userEntity->update( $values );
+		$user->update( $values );
 	}
 
 	/**
-	 * Authenticates and existing user.
+	 * Authenticates and existing User.
 	 *
 	 * @param  string $email
 	 * @param  string $password
-	 * @return Northern\Core\Component\User\Entity\UserEntity
+	 * @return Northern\Core\Domain\User
 	 * @throws Northern\Core\Component\User\Exception\InvalidPasswordException
 	 */
 	public function authenticateUser( $email, $password )
 	{
-		$userEntity = $this->getUserEntityByEmail( $email );
+		$user = $this->getUserByEmail( $email );
 
-		if( ! $this->passwordEncoder->isPasswordValid( $userEntity->getPassword(), $password, $userEntity->getSalt() ) )
+		if( ! $this->passwordEncoder->isPasswordValid( $user->getPassword(), $password, $user->getSalt() ) )
 		{
 			throw new Exception\InvalidPasswordException();
 		}
 
-		return $userEntity;
+		return $user;
 	}
 
 	/**
-	 * Creates a public token for the specified user. The public token can be used
+	 * Creates a public token for the specified User. The public token can be used
 	 * for password reset and other public user actions in which the user is required
 	 * to be identified.
 	 *
-	 * @param  \Northern\Core\Component\Component\User\Entity\UserEntity
+	 * @param  \Northern\Core\Domain\User
 	 * @return string
 	 */
-	public function getUserEntityPublicToken( Entity\UserEntity $userEntity )
+	public function getUserPublicToken( User $user )
 	{
-		$publicToken = sha1("{$userEntity->getId()}{$userEntity->getEmail()}{$userEntity->getPassword()}{$userEntity->getTimeCreated()}");
+		$publicToken = sha1("{$user->getId()}{$user->getEmail()}{$user->getPassword()}{$user->getTimeCreated()}");
 
 		return $publicToken;
 	}

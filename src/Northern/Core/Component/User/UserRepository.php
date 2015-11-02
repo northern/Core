@@ -6,18 +6,18 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 class UserRepository extends \Northern\Core\Common\AbstractRepository {
 
-	public function getUserEntityCount( $status )
+	public function getUserCount( $status )
 	{
-		$query = $this->getUserEntityCollectionQuery( $status, NULL, NULL );
+		$query = $this->getUserCollectionQuery( $status, NULL, NULL );
 
 		$paginator = $this->getPaginator( $query );
 
 		return count( $paginator );
 	}
 
-	public function getUserEntityCollection( $status, $offset, $limit )
+	public function getUserCollection( $status, $offset, $limit )
 	{
-		$query = $this->getUserEntityCollectionQuery( $status, $offset, $limit );
+		$query = $this->getUserCollectionQuery( $status, $offset, $limit );
 
 		$paginator = $this->getPaginator( $query );
 
@@ -28,22 +28,22 @@ class UserRepository extends \Northern\Core\Common\AbstractRepository {
 		return $userCollection;
 	}
 
-	public function getUserEntityById( $id )
+	public function getUserById( $id )
 	{
 		return $this->findOneById( $id );
 	}
 
-	public function getUserEntityByName( $name )
+	public function getUserByName( $name )
 	{
 		return $this->findOneByName( $name );
 	}
 
-	public function getUserEntityByEmail( $email )
+	public function getUserByEmail( $email )
 	{
 		return $this->findOneByEmail( $email );
 	}
 
-	protected function getUserEntityCollectionQuery( $status, $offset, $limit )
+	protected function getUserCollectionQuery( $status, $offset, $limit )
 	{
 		$em = $this->getEntityManager();
 
