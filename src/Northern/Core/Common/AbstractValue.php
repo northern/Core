@@ -17,8 +17,10 @@ abstract class AbstractValue {
 		{
 			$this->$property = $value;
 		}
-
-		throw new \RuntimeException("Cannot 'set', property {$property} or method {$method} does not exist.");
+		else
+		{
+			throw new \RuntimeException("Cannot 'set', property {$property} or method {$method} does not exist.");
+		}
 	}
 
 	public function __get( $property )
@@ -34,8 +36,10 @@ abstract class AbstractValue {
 		{
 			return $this->$property;
 		}
-
-		throw new \RuntimeException("Cannot 'get', property {$property} or method {$method} does not exist.");
+		else
+		{
+			throw new \RuntimeException("Cannot 'get', property {$property} or method {$method} does not exist.");
+		}
 	}
 
 	public function __isset( $property )
