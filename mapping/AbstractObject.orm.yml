@@ -1,0 +1,19 @@
+Northern\Core\Domain\AbstractObject:
+  type: mappedSuperclass
+
+  fields:
+    timeCreated:
+      type: integer
+      column: time_created
+      options:
+        default: 0
+
+    timeUpdated:
+      type: integer
+      column: time_updated
+      options:
+        default: 0
+
+  lifecycleCallbacks:
+    prePersist: [ onPrePersist ]
+    preUpdate: [ onPreUpdate ]

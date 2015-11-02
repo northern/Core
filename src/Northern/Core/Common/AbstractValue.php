@@ -17,6 +17,8 @@ abstract class AbstractValue {
 		{
 			$this->$property = $value;
 		}
+
+		return $this;
 	}
 
 	public function __get( $property )
