@@ -2,9 +2,10 @@
 
 namespace Northern\Core\Component\User;
 
-use Northern\Common\Helper\ArrayHelper as Arr;
-use Northern\Core\Component\User\Entity\UserEntity;
+use Northern\Core\Domain\User;
 use Northern\Core\Common\Exception\Validation\Errors;
+
+use Northern\Common\Helper\ArrayHelper as Arr;
 
 class UserValidator extends \Northern\Core\Common\AbstractValidator {
 	
@@ -53,7 +54,7 @@ class UserValidator extends \Northern\Core\Common\AbstractValidator {
 		return $constraints;
 	}
 
-	public function validateUniqueEmail( UserEntity $userEntity, $email, Errors $errors = NULL )
+	public function validateUniqueEmail( User $user, $email, Errors $errors = NULL )
 	{
 		if( empty( $errors ) )
 		{
@@ -62,11 +63,11 @@ class UserValidator extends \Northern\Core\Common\AbstractValidator {
 
 		if( ! empty( $email ) )
 		{
-			if( $email !== $userEntity->email )
+			if( $email !== $user->email )
 			{
-				$otherUserEntity = $this->userRepository->getUserEntityByEmail( $email );
+				$otherUser = $this->userRepository->getUserByEmail( $email );
 
-				if( ! empty( $otherUserEntity ) )
+				if( ! empty( $otherUser ) )
 				{
 					$errors->add('email', "There already is another user with this email address.");
 				}
