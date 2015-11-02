@@ -2,7 +2,7 @@
 
 namespace Northern\Core\Domain;
 
-class User extends \Northern\Core\Common\AbstractObject {
+class User extends \Northern\Core\Domain\AbstractObject {
 	
 	const STATUS_ACTIVE   = 'active';
 	const STATUS_DISABLED = 'disabled';

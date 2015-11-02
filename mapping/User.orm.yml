@@ -1,6 +1,5 @@
-User:
-  type: entity
-  table: users
+Northern\Core\Domain\User:
+  type: mappedSuperclass
 
   id:
     id:
