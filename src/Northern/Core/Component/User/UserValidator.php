@@ -45,7 +45,7 @@ class UserValidator extends \Northern\Core\Common\AbstractValidator {
 			),
 			'status' => array(
 				array(
-					'validator' => new \Zend\Validator\InArray( array('haystack' => UserEntity::getStatuses() ) ),
+					'validator' => new \Zend\Validator\InArray( array('haystack' => User::getStatuses() ) ),
 					'message'   => "Invalid status specified.",
 				),
 			),

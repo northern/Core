@@ -18,7 +18,7 @@ abstract class AbstractValue {
 			$this->$property = $value;
 		}
 
-		return $this;
+		throw new \RuntimeException("Cannot 'set', property {$property} or method {$method} does not exist.");
 	}
 
 	public function __get( $property )
@@ -35,7 +35,32 @@ abstract class AbstractValue {
 			return $this->$property;
 		}
 
-		return NULL;
+		throw new \RuntimeException("Cannot 'get', property {$property} or method {$method} does not exist.");
+	}
+
+	public function __isset( $property )
+	{
+		return property_exists( get_class( $this ), $property );
+	}
+
+	public function __call( $method, array $arguments )
+	{
+		$accessorType = substr( $method, 0, 3 );
+
+		$property = lcfirst( substr( $method, 3, strlen( $method ) - 3 ) );
+
+		if( $accessorType === 'get' )
+		{
+			return $this->$property;
+		}
+		else
+		if( $accessorType === 'set' )
+		{
+			$this->$property = $arguments[0];
+
+			return $this;
+		}
+
 	}
 	
 }

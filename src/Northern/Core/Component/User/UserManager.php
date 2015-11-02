@@ -84,7 +84,7 @@ class UserManager extends \Northern\Core\Common\AbstractManager {
 	 * @return \Northern\Core\Domain\UserEntity
 	 * @throws \Northern\Core\Component\User\Exception\UserNotFoundByEmailException
 	 */
-	public function getUserEntityByEmail( $email )
+	public function getUserByEmail( $email )
 	{
 		$user = $this->userRepository->getUserByEmail( $email );
 
@@ -100,8 +100,8 @@ class UserManager extends \Northern\Core\Common\AbstractManager {
 	{
 		$user = $this->getUserByEmail( $email );
 
-		$passwordSalt    = $userEntity->getSalt();
-		$encodedPassword = $userEntity->getPassword();
+		$passwordSalt    = $user->getSalt();
+		$encodedPassword = $user->getPassword();
 
 		if( $this->passwordEncoder->isPasswordValid( $encodedPassword, $plainTextPassword, $passwordSalt ) == FALSE )
 		{
@@ -122,7 +122,7 @@ class UserManager extends \Northern\Core\Common\AbstractManager {
 	 */
 	public function createUser( $email, $password = NULL )
 	{
-		$userEntity = new User();
+		$user = new User();
 
 		$values = [
 			'email' => $email,
