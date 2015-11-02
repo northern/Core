@@ -1,0 +1,15 @@
+AbstractObject:
+  type: entity
+
+  fields:
+    timeCreated:
+      type: integer
+      column: time_created
+
+    timeUpdated:
+      type: integer
+      column: time_updated
+
+  lifecycleCallbacks:
+    prePersist: [ onPrePersist ]
+    preUpdate: [ onPreUpdate ]
