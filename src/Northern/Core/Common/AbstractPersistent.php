@@ -28,6 +28,8 @@ abstract class AbstractPersistent extends AbstractValue {
 		{
 			foreach( $values as $field => $value )
 			{
+				if( property_exists( get_class( $this ), $field ) )
+				{
 				/*if( is_array( $value ) )
 				{
 					$entity = $this->__get( $field );
@@ -36,6 +38,7 @@ abstract class AbstractPersistent extends AbstractValue {
 				{*/
 					$this->__set( $field, $value );
 				/*}*/
+				}
 			}
 		}
 	}
