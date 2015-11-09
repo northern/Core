@@ -162,15 +162,25 @@ class UserManager extends \Northern\Core\Common\AbstractManager {
 	 */
 	public function updateUser( User $user, array $values )
 	{
-		$password        = Arr::extract( $values, 'password' );
-		$passwordConfirm = Arr::extract( $values, 'passwordConfirm' );
+		$password        = Arr::extract( $values, 'password', NULL );
+		$passwordConfirm = Arr::extract( $values, 'passwordConfirm', NULL );
 
 		$errors = $this->userValidator->validate( $values );
 
 		$errors = $this->userValidator->validateUniqueEmail( $user, Arr::get( $values, 'email' ), $errors );
 
-		if( ! empty( $password ) )
+		if( $password !== NULL )
 		{
+			if( empty( $password ) )
+			{
+				$errors->add('password', "The password cannot be left blank.");
+			}
+			else
+			if( empty( $passwordConfirm ) )
+			{
+				$errors->add('password', "The password confirm cannot be left blank.");
+			}
+			else
 			if( $password !== $passwordConfirm )
 			{
 				$errors->add('password', "The password and password confirm fields must be equal.");
