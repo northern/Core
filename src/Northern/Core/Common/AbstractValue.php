@@ -19,7 +19,7 @@ abstract class AbstractValue {
 		}
 		else
 		{
-			throw new \RuntimeException("Cannot 'set', property {$property} or method {$method} does not exist.");
+			throw new \RuntimeException("Cannot set property '{$property}' or method {$method} does not exist.");
 		}
 	}
 
@@ -38,7 +38,7 @@ abstract class AbstractValue {
 		}
 		else
 		{
-			throw new \RuntimeException("Cannot 'get', property {$property} or method {$method} does not exist.");
+			throw new \RuntimeException("Cannot get property '{$property}' or method {$method} does not exist.");
 		}
 	}
 
