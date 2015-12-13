@@ -6,8 +6,7 @@ use Northern\Core\Common\Exception\Validation\Errors;
 
 class ValidationException extends CoreException {
 
-	protected $errors;
-	protected $values;
+	use ValidationExceptionAwareTrait;
 
 	public function __construct( Errors $errors, array $values = array(), \Exception $previous = NULL )
 	{
@@ -15,26 +14,6 @@ class ValidationException extends CoreException {
 
 		$this->setErrors( $errors );
 		$this->setValues( $values );
-	}
-
-	public function setErrors( Errors $errors )
-	{
-		$this->errors = $errors;
-	}
-
-	public function getErrors()
-	{
-		return $this->errors;
-	}
-
-	public function setValues( array $values )
-	{
-		$this->values = $values;
-	}
-
-	public function getValues()
-	{
-		return $this->values;
 	}
 
 }
