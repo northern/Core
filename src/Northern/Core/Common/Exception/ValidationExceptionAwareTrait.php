@@ -9,14 +9,6 @@ trait ValidationExceptionAwareTrait {
 	protected $errors;
 	protected $values;
 
-	public function __construct( Errors $errors, array $values = array(), \Exception $previous = NULL )
-	{
-		parent::__construct("A validation exception occured.", static::$scope, $previous);
-
-		$this->setErrors( $errors );
-		$this->setValues( $values );
-	}
-
 	public function setErrors( Errors $errors )
 	{
 		$this->errors = $errors;
