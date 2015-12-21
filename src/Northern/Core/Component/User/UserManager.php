@@ -169,7 +169,7 @@ class UserManager extends \Northern\Core\Common\AbstractManager {
 
 		$errors = $this->userValidator->validateUniqueEmail( $user, Arr::get( $values, 'email' ), $errors );
 
-		if( $password !== NULL )
+		if( $password !== NULL AND ( ! empty( $password ) AND ! empty( $passwordConfirm ) ) )
 		{
 			if( empty( $password ) )
 			{
