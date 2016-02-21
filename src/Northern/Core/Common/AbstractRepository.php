@@ -39,4 +39,16 @@ abstract class AbstractRepository extends EntityRepository {
 		return $paginator;
 	}
 
+   protected function persist( $entity )
+   {
+      $em = $this->getEntityManager();
+      $em->persist( $entity );
+   }
+
+   protected function flush()
+   {
+      $em = $this->getEntityManager();
+      $em->flush();
+   }
+
 }
