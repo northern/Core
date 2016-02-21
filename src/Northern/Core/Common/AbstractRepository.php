@@ -14,7 +14,7 @@ abstract class AbstractRepository extends EntityRepository {
 	 *
 	 * @return \Doctrine\ORM\EntityManager
 	 */
-	protected function getEntityManager()
+	public function getEntityManager()
 	{
 		return $this->_em;
 	}
@@ -24,7 +24,7 @@ abstract class AbstractRepository extends EntityRepository {
 	 * 
 	 * @return \Doctrine\ORM\EntityManager
 	 */
-	protected function getCleanEntityManager()
+	public function getCleanEntityManager()
 	{
 		$em = $this->getEntityManager();
 		$em->clear();
@@ -32,20 +32,20 @@ abstract class AbstractRepository extends EntityRepository {
 		return $em;
 	}
 	
-	protected function getPaginator( $query )
+	public function getPaginator( $query )
 	{
 		$paginator  = new Paginator( $query );
 		
 		return $paginator;
 	}
 
-   protected function persist( $entity )
+   public function persist( $entity )
    {
       $em = $this->getEntityManager();
       $em->persist( $entity );
    }
 
-   protected function flush()
+   public function flush()
    {
       $em = $this->getEntityManager();
       $em->flush();
