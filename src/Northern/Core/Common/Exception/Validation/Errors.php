@@ -18,7 +18,7 @@ class Errors extends \ArrayObject {
 
 	public function combine( Errors $errors )
 	{
-		Arr::merge( $this, $errors );
+      return new Errors( Arr::merge( $this->getArrayCopy(), $errors->getArrayCopy() ) );
 	}
 
    public function insert( $key, Errors $errors )
